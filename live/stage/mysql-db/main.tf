@@ -1,9 +1,9 @@
 terraform {
-    required_version = ">= 0.12"
+    required_version = ">= 0.13"
     backend "remote" {
         organization = "org-example"
         workspaces {
-            name = "example-architecture"
+            name = "db-stage"
         }
     }
 }
@@ -13,12 +13,14 @@ provider "aws" {
 }
 
 module "db" {
-    source = "github.com/muhannad0/terraform-example-module//modules/mysql-db?ref=v0.0.1"
+    source = "github.com/muhannad0/terraform-example-module//modules/mysql-db?ref=v0.0.2"
 
-    identifier = "stage"
+    identifier = "db-stage"
 
     name = "example_db_stage"
-    username = "user"
+
+    # use variables configured in TF Cloud Workspace
+    username = var.db_user
     password = var.db_pass
     port = 3306
 }
