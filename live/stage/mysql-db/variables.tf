@@ -1,9 +1,8 @@
-variable "db_user" {
-    description = "The administrator username for the database."
-    type = string
-}
-
-variable "db_pass" {
-    description = "The password for the administrator user of the database."
-    type = string
+variable "db_creds" {
+    description = "The credentials (username/password) for the database."
+    type = object({
+        username = string
+        password = string
+    })
+    default = null
 }
