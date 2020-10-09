@@ -13,7 +13,9 @@ This repo contains an example of using Terraform to deploy a 2-tier web applicat
 + Create the required organization and workspaces in Terraform Cloud.
     + Ensure you have [configured each workspace](https://learn.hashicorp.com/tutorials/terraform/cloud-workspace-configure?in=terraform/cloud-get-started) with your AWS credentials.
 
-+ Configure the remote backend for each service with the values setup in Terraform Cloud.
+### Setup the Remote Backend
+
+Configure the remote backend for each service with the values setup in Terraform Cloud.
 ```
 terraform {
     backend "remote" {
@@ -25,11 +27,17 @@ terraform {
 }
 ```
 
-+ Deploy the database service (MySQL RDS).
-    + Ensure you have configured Terraform variables for `db_user` and `db_pass` in the respective Terraform Cloud workspace.
+### Deploy the database service (RDS MySQL).
 
-+ Deploy the web application cluster (ASG + ALB).
-    + Provide config details for the database workspace to query and get the remote state.
+In order to keep sensitive data off the configuration files, user should provide a `db_creds` object variable in order to configure the username and password for the database service.
+
++ To configure `db_creds` as a variable on Terraform Cloud, add a variable with key `db_creds` and the value `{ username = "<username>", password = "<password>" }`. Select `HCL` and `Sensitive`, then hit Save.
+
++ This example uses [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/tutorials_basic.html#tutorial-basic-step1) to store/retrieve credentials if `db_creds` variable is not set.
+
+
+### Deploy the web application cluster (ASG + ALB).
++ Provide config details for the database workspace to query and get the remote state.
 
 + *Commands used for above steps (using CLI-driven workflow):*
 ```bash
@@ -37,6 +45,7 @@ terraform init
 terraform apply
 ```
 
+### Cleanup
 + To clean up run `terraform destroy` in the respective workspaces/folders for each service:
 
 
